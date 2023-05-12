@@ -1,27 +1,18 @@
-# This is a basic workflow to help you get started with Actions
-
 name: CI
 
-# Controls when the workflow will run
-on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+on: [push, pull_request]
 
 jobs:
-  docker-arm:
-    runs-on: buildjet-4vcpu-ubuntu-2204-arm
+  Test:
+    runs-on: ubuntu-22.04
+    
     steps:
-      - uses: actions/checkout@v3
-      # As you don't need QEMU anymore you can remove this step 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2        
-
-      - name: Check logs volume
+      - name: set arm64
         run: |
+          wget https://github.com/strace/strace/releases/download/v5.10/strace-5.10.tar.xz
+          tar -xf strace-5.10.tar.xz
+          cd strace-5.10/
+          ./configure --build x86_64-pc-linux-gnu --host aarch64-linux-gnu LDFLAGS="-static -pthread" --enable-mpers=check
+          make
+          file strace
           uname -m
