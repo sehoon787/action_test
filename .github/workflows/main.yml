@@ -7,7 +7,26 @@ jobs:
     runs-on: ubuntu-22.04
     
     steps:
-      - name: set arm64
+      - name: set arm64 1
+        run: |
+          cd ~/
+          sudo apt install crossbuild-essential-arm64
+          cd protobuf
+          git submodule update --init --recursive
+          ./autogen
+          mkdir arm64_build
+          cd arm64_build
+          export CC=aarch64-linux-gnu-gcc \
+          export CXX=aarch64-linux-gnu-g++ \
+          ../configure --host=aarch64-linux \
+          --prefix=$HOME/armnn-devenv/google/arm64_pb_install \
+          --with-protoc=$HOME/armnn-devenv/google/x86_64_pb_install/bin/protoc
+          make install -j16
+          cd ..
+
+          uname -m
+
+      - name: set arm64 2
         run: |
           wget https://github.com/strace/strace/releases/download/v5.10/strace-5.10.tar.xz
           tar -xf strace-5.10.tar.xz
@@ -16,3 +35,6 @@ jobs:
           make
           file strace
           uname -m
+          
+          
+          
