@@ -10,7 +10,7 @@ jobs:
       - name: set arm64 1
         run: |
           cd ~/
-          sudo apt install crossbuild-essential-arm64
+          git clone -b v3.5.2 https://github.com/google/protobuf.git protobuf
           cd protobuf
           git submodule update --init --recursive
           ./autogen
